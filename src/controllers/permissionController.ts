@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb"
 import Permission from "../models/Permission"
 import { Request, Response } from "express"
 
@@ -25,4 +26,19 @@ const createPermission = async (req: Request, res: Response) => {
     }
 }
 
-export default { getAllPermissions, createPermission }
+const updatePermission = async (req: Request, res: Response) => {
+    try {
+        const permission_id = new ObjectId(req.params.id)
+        const { name, description } = req.body
+        const update = await Permission.updateOne({ _id: permission_id }, { $set: { name, description } })
+        if (!update.acknowledged) {
+            return res.json({ success: false, message: "Error Updating Permission" })
+        }
+        return res.json({ success: true, message: "Permission Updated Successfully" })
+    } catch (error: any) {
+        console.log(error.message)
+        return res.json({ success: false, message: "Internal Server Error Occurred" })
+    }
+}
+
+export default { getAllPermissions, createPermission, updatePermission }
