@@ -5,7 +5,7 @@ const UserSchema = new Schema({
     name: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    assigned_roles: { type: [mongoose.Types.Array], default: [] }
+    assigned_roles: { type: [mongoose.Types.ObjectId], default: [] }
 })
 
 export default mongoose.model("User", UserSchema)
