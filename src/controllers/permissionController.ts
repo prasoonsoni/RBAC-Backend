@@ -1,5 +1,6 @@
-import { ObjectId } from "mongodb"
 import Permission from "../models/Permission"
+import Role from "../models/Role"
+import { ObjectId } from "mongodb"
 import { Request, Response } from "express"
 
 const getAllPermissions = async (req: Request, res: Response) => {
@@ -41,4 +42,22 @@ const updatePermission = async (req: Request, res: Response) => {
     }
 }
 
-export default { getAllPermissions, createPermission, updatePermission }
+const deletePermission = async (req: Request, res: Response) => {
+    try {
+        const permission_id = new ObjectId(req.params.id)
+        const updateRoles = await Role.updateMany({}, { $pull: { permissions: permission_id } })
+        if (!updateRoles.acknowledged) {
+            return res.json({ success: false, message: "Error Deleting Permission" })
+        }
+        const deletePermissionFromDB = await Permission.deleteOne({ _id: permission_id })
+        if (!deletePermissionFromDB.acknowledged) {
+            return res.json({ success: false, message: "Error Deleting Permission" })
+        }
+        return res.json({ success: true, message: "Permission Deleted Successfully" })
+    } catch (error: any) {
+        console.log(error.message)
+        return res.json({ success: false, message: "Internal Server Error Occurred" })
+    }
+}
+
+export default { getAllPermissions, createPermission, updatePermission, deletePermission }
