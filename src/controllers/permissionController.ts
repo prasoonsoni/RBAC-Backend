@@ -1,5 +1,16 @@
 import Permission from "../models/Permission"
 import { Request, Response } from "express"
+
+const getAllPermissions = async (req: Request, res: Response) => {
+    try {
+        const permissions = await Permission.find({})
+        return res.json({ success: true, message: "Permissions Found Successfully", data: permissions })
+    } catch (error: any) {
+        console.log(error.message)
+        return res.json({ success: false, message: "Internal Server Error Occurred" })
+    }
+}
+
 const createPermission = async (req: Request, res: Response) => {
     try {
         const { name, description } = req.body
@@ -14,4 +25,4 @@ const createPermission = async (req: Request, res: Response) => {
     }
 }
 
-export default { createPermission }
+export default { getAllPermissions, createPermission }
