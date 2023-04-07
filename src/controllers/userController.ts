@@ -6,6 +6,16 @@ import dotenv from "dotenv"
 dotenv.config()
 const JWT_SECRET = process.env.JWT_SECRET || "Th15i5TeM9JWT"
 
+
+const getAllUsers = async (req: Request, res: Response) => {
+    try {
+        const users = await User.find({})
+        return res.json({ success: true, message: "Users Found Successfully", data: users })
+    } catch (error: any) {
+        console.log(error.message)
+        return res.json({ success: false, message: "Internal Server Error Occurred" })
+    }
+}
 const createUser = async (req: Request, res: Response) => {
     try {
         const { name, email, password } = req.body
@@ -45,4 +55,4 @@ const loginUser = async (req: Request, res: Response) => {
     }
 }
 
-export default { createUser, loginUser }
+export default { getAllUsers, createUser, loginUser }
