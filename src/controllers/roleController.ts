@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb"
 import Role from "../models/Role"
 import { Request, Response } from "express"
+import User from "../models/User"
 
 const getAllRoles = async (req: Request, res: Response) => {
     try {
@@ -41,4 +42,22 @@ const updateRole = async (req: Request, res: Response) => {
     }
 }
 
-export default { getAllRoles, createRole, updateRole }
+const deleteRole = async (req: Request, res: Response) => {
+    try {
+        const role_id = new ObjectId(req.params.id)
+        const updateUsers = await User.updateMany({}, { $pull: { assigned_roles: role_id } })
+        if (!updateUsers.acknowledged) {
+            return res.json({ success: false, message: "Error Deleting Role" })
+        }
+        const deleteRoleFromDB = await Role.deleteOne({ _id: role_id })
+        if (!deleteRoleFromDB.acknowledged) {
+            return res.json({ success: false, message: "Error Deleting Role" })
+        }
+        return res.json({ success: true, message: "Role Deleted Successfully" })
+    } catch (error: any) {
+        console.log(error.message)
+        return res.json({ success: false, message: "Internal Server Error Occurred" })
+    }
+}
+
+export default { getAllRoles, createRole, updateRole, deleteRole }
