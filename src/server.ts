@@ -5,6 +5,7 @@ import connectToMongoDB from "./database/connection"
 import userRouter from "./routes/userRoutes"
 import roleRouter from "./routes/roleRoutes"
 import adminRouter from "./routes/adminRoutes"
+import permissionRouter from "./routes/permissionRoutes"
 
 const app: Application = express()
 const PORT = process.env.PORT || 5000
@@ -19,6 +20,7 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/user', userRouter)
 app.use('/role', roleRouter)
 app.use('/admin', adminRouter)
+app.use('/permission', permissionRouter)
 
 app.listen(PORT, () => {
     console.log(`App Listening at PORT=${PORT} and BASEURL=http://localhost:${PORT}`)
