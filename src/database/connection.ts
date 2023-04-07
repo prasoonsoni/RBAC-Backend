@@ -1,7 +1,7 @@
 import dotenv from "dotenv"
 import mongoose from "mongoose"
 dotenv.config()
-const MONGO_URI: string = process.env.MONGO_URI || "mongodb://localhost:27017/example"
+const MONGO_URI: string = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/rbac"
 
 const connectToMongoDB = () => {
     try {
