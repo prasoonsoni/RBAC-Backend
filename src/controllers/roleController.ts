@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb"
 import Role from "../models/Role"
 import { Request, Response } from "express"
 
@@ -25,5 +26,19 @@ const createRole = async (req: Request, res: Response) => {
     }
 }
 
+const updateRole = async (req: Request, res: Response) => {
+    try {
+        const { name, description, permissions } = req.body
+        const role_id = req.params.id
+        const updateRole = await Role.updateOne({ _id: new ObjectId(role_id) }, { $set: { name, description, permissions } })
+        if (!updateRole.acknowledged) {
+            return res.json({ success: false, message: "Error Updating Role" })
+        }
+        return res.json({ success: true, message: "Role Updated Successfully" })
+    } catch (error: any) {
+        console.log(error.message)
+        return res.json({ success: false, message: "Internal Server Error Occurred" })
+    }
+}
 
-export default { getAllRoles, createRole }
+export default { getAllRoles, createRole, updateRole }
