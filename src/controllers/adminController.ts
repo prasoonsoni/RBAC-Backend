@@ -31,4 +31,18 @@ const removeRole = async (req: Request, res: Response) => {
     }
 }
 
-export default { addRole, removeRole }
+const addPermission = async (req: Request, res: Response) => {
+    try {
+        const { role_id, permission_id } = req.body
+        const addToRole = await Role.updateOne({ _id: new ObjectId(role_id) }, { $push: { permissions: new ObjectId(permission_id) } })
+        if (!addToRole.acknowledged) {
+            return res.json({ success: false, message: "Error Adding Permission" })
+        }
+        return res.json({ success: true, message: "Permission Added Successfully" })
+    } catch (error: any) {
+        console.log(error.message)
+        return res.json({ success: false, message: "Internal Server Error Occurred" })
+    }
+}
+
+export default { addRole, removeRole, addPermission }
