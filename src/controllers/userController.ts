@@ -3,9 +3,22 @@ import { Request, Response } from "express"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
+import { ObjectId } from "mongodb"
 dotenv.config()
 const JWT_SECRET = process.env.JWT_SECRET || "Th15i5TeM9JWT"
 
+const getUser = async (req: any, res: Response) => {
+    try {
+        const user = await User.findOne({ _id: new ObjectId(req.user._id) }).select('-password')
+        if (!user) {
+            return res.json({ success: false, message: 'User Not Found.' })
+        }
+        return res.json({ success: true, message: 'User Found Successfully.', user })
+    } catch (error: any) {
+        console.log(error.message)
+        return res.json({ success: false, message: "Internal Server Error Occurred" })
+    }
+}
 
 const getAllUsers = async (req: Request, res: Response) => {
     try {
@@ -16,6 +29,7 @@ const getAllUsers = async (req: Request, res: Response) => {
         return res.json({ success: false, message: "Internal Server Error Occurred" })
     }
 }
+
 const createUser = async (req: Request, res: Response) => {
     try {
         const { name, email, password } = req.body
@@ -55,4 +69,4 @@ const loginUser = async (req: Request, res: Response) => {
     }
 }
 
-export default { getAllUsers, createUser, loginUser }
+export default { getAllUsers, createUser, loginUser, getUser }
