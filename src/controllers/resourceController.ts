@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb"
 import Resource from "../models/Resource"
 import { Request, Response } from "express"
 
@@ -25,4 +26,19 @@ const createResource = async (req: Request, res: Response) => {
     }
 }
 
-export default { getAllResources, createResource }
+const updateResource = async (req: Request, res: Response) => {
+    try {
+        const { name, description, permission } = req.body
+        const id = new ObjectId(req.params.id)
+        const resource = await Resource.updateOne({ _id: id }, { $set: { name, description, permission } })
+        if (!resource) {
+            return res.json({ success: false, message: "Error Updating Resource" })
+        }
+        return res.json({ success: true, message: "Resource Updated Successfully" })
+    } catch (error: any) {
+        console.log(error.message)
+        return res.json({ success: false, message: "Internal Server Error Occurred" })
+    }
+}
+
+export default { getAllResources, createResource, updateResource }
