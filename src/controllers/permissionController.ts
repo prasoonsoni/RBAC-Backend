@@ -1,5 +1,6 @@
 import Permission from "../models/Permission"
 import Role from "../models/Role"
+import Resource from "../models/Resource"
 import { ObjectId } from "mongodb"
 import { Request, Response } from "express"
 
@@ -47,6 +48,10 @@ const deletePermission = async (req: Request, res: Response) => {
         const permission_id = new ObjectId(req.params.id)
         const updateRoles = await Role.updateMany({}, { $pull: { permissions: permission_id } })
         if (!updateRoles.acknowledged) {
+            return res.json({ success: false, message: "Error Deleting Permission" })
+        }
+        const updateResources = await Resource.updateMany({}, { $pull: { permissions: permission_id } })
+        if (!updateResources.acknowledged) {
             return res.json({ success: false, message: "Error Deleting Permission" })
         }
         const deletePermissionFromDB = await Permission.deleteOne({ _id: permission_id })
