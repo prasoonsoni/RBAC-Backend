@@ -31,7 +31,7 @@ const updateResource = async (req: Request, res: Response) => {
         const { name, description, permission } = req.body
         const id = new ObjectId(req.params.id)
         const resource = await Resource.updateOne({ _id: id }, { $set: { name, description, permission } })
-        if (!resource) {
+        if (!resource.acknowledged) {
             return res.json({ success: false, message: "Error Updating Resource" })
         }
         return res.json({ success: true, message: "Resource Updated Successfully" })
@@ -41,4 +41,18 @@ const updateResource = async (req: Request, res: Response) => {
     }
 }
 
-export default { getAllResources, createResource, updateResource }
+const deleteResource = async (req: Request, res: Response) => {
+    try {
+        const id = new ObjectId(req.params.id)
+        const deleteResourceFromDB = await Resource.deleteOne({ _id: id })
+        if (!deleteResourceFromDB.acknowledged) {
+            return res.json({ success: false, message: "Error Deleting Resource" })
+        }
+        return res.json({ success: true, message: "Resource Deleted Successfully" })
+    } catch (error: any) {
+        console.log(error.message)
+        return res.json({ success: false, message: "Internal Server Error Occurred" })
+    }
+}
+
+export default { getAllResources, createResource, updateResource, deleteResource }
