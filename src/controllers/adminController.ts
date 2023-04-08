@@ -1,5 +1,6 @@
 import User from "../models/User"
 import Role from "../models/Role"
+import Resource from "../models/Resource"
 import { Request, Response } from "express"
 import { ObjectId } from "mongodb"
 
@@ -59,4 +60,34 @@ const removePermission = async (req: Request, res: Response) => {
     }
 }
 
-export default { addRole, removeRole, addPermission, removePermission }
+const addPermissionToResource = async (req: Request, res: Response) => {
+    try {
+        const { resource_id, permission_id } = req.body
+        const addToResource = await Resource.updateOne({ _id: new ObjectId(resource_id) }, { $push: { permissions: new ObjectId(permission_id) } })
+        if (!addToResource.acknowledged) {
+            return res.json({ success: false, message: "Error Adding Permission" })
+        }
+        return res.json({ success: true, message: "Permission Added Successfully" })
+    } catch (error: any) {
+        console.log(error.message)
+        return res.json({ success: false, message: "Internal Server Error Occurred" })
+    }
+}
+
+const removePermissionFromResource = async (req: Request, res: Response) => {
+    try {
+        const { resource_id, permission_id } = req.body
+        const removeFromResource = await Resource.updateOne({ _id: new ObjectId(resource_id) }, { $pull: { permissions: new ObjectId(permission_id) } })
+        if (!removeFromResource.acknowledged) {
+            return res.json({ success: false, message: "Error Removing Permission" })
+        }
+        return res.json({ success: true, message: "Permission Removed Successfully" })
+    } catch (error: any) {
+        console.log(error.message)
+        return res.json({ success: false, message: "Internal Server Error Occurred" })
+    }
+}
+
+
+
+export default { addRole, removeRole, addPermission, removePermission, addPermissionToResource, removePermissionFromResource }
