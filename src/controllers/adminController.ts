@@ -39,7 +39,12 @@ const addPermission = async (req: Request, res: Response) => {
         if (!addToRole.acknowledged) {
             return res.json({ success: false, message: "Error Adding Permission" })
         }
-        return res.json({ success: true, message: "Permission Added Successfully" })
+        else if(addToRole.modifiedCount){
+            return res.json({ success: true, message: "Permission Added Successfully" })
+        }
+        else{
+            return res.json({ success: false, message: "Error Adding Permission" })
+        }
     } catch (error: any) {
         console.log(error.message)
         return res.json({ success: false, message: "Internal Server Error Occurred" })
@@ -62,7 +67,8 @@ const removePermission = async (req: Request, res: Response) => {
 
 const addPermissionToResource = async (req: Request, res: Response) => {
     try {
-        const { resource_id, permission_id } = req.body
+        const {permission_id, resource_id,  } = req.body
+        console.log(req.body);
         const addToResource = await Resource.updateOne({ _id: new ObjectId(resource_id) }, { $push: { permissions: new ObjectId(permission_id) } })
         if (!addToResource.acknowledged) {
             return res.json({ success: false, message: "Error Adding Permission" })

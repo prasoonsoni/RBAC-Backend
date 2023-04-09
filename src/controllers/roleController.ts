@@ -13,6 +13,20 @@ const getAllRoles = async (req: Request, res: Response) => {
     }
 }
 
+
+const getRole = async (req: any, res: Response) => {
+    try {
+        const role = await Role.findOne({ _id: new ObjectId(req.params.id) })
+        if (!role) {
+            return res.json({ success: false, message: 'Role Not Found.' })
+        }
+        return res.json({ success: true, message: 'Role Found Successfully.', role })
+    } catch (error: any) {
+        console.log(error.message)
+        return res.json({ success: false, message: "Internal Server Error Occurred" })
+    }
+}
+
 const createRole = async (req: Request, res: Response) => {
     try {
         const { name, description, permissions } = req.body
@@ -60,4 +74,4 @@ const deleteRole = async (req: Request, res: Response) => {
     }
 }
 
-export default { getAllRoles, createRole, updateRole, deleteRole }
+export default { getRole, getAllRoles, createRole, updateRole, deleteRole }
