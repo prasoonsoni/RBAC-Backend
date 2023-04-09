@@ -32,6 +32,7 @@ const getAllUsers = async (req: Request, res: Response) => {
 
 const createUser = async (req: Request, res: Response) => {
     try {
+        console.log(req.body);
         const { name, email, password } = req.body
         const alreadyExist = await User.findOne({ email })
         if (alreadyExist) {
