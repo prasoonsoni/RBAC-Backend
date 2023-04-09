@@ -7,13 +7,13 @@ import roleRouter from "./routes/roleRoutes"
 import adminRouter from "./routes/adminRoutes"
 import permissionRouter from "./routes/permissionRoutes"
 import resourceRouter from "./routes/resourceRoutes"
-
+import cors from 'cors';
 const app: Application = express()
 const PORT = process.env.PORT || 5000
 connectToMongoDB()
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-
+app.use(cors)
 app.get('/', (req: Request, res: Response) => {
     res.send("Working Fine!!")
 })
