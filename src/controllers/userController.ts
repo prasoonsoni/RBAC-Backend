@@ -70,4 +70,19 @@ const loginUser = async (req: Request, res: Response) => {
     }
 }
 
+const deleteUser = async (req: Request, res:Response) =>{
+    try {
+        const id = new ObjectId(req.params.id)
+        const user = await User.deleteOne({_id:id})
+        if (!user.acknowledged) {
+            return res.json({ success: false, message: "Error Deleting User" })
+        }else{
+            return res.json({ success: false, message: "User Deleted Successfully"})   
+        }
+
+    } catch (error) {
+        
+    }
+}
+
 export default { getAllUsers, createUser, loginUser, getUser }
