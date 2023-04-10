@@ -4,9 +4,61 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
 import { ObjectId } from "mongodb"
+import Role from "../models/Role"
+import Resource from "../models/Resource"
 dotenv.config()
 const JWT_SECRET = process.env.JWT_SECRET || "Th15i5TeM9JWT"
 
+const getUserPermissions = async(req:any, res:Response)=>{
+    try {
+        const user = await User.findOne({_id:new ObjectId(req.user._id)})
+        const roles =  user?.assigned_roles as Array<string>
+        let user_permissions:Array<string> = []
+        for(let i=0;i<roles?.length;i++){
+            const curr_role = await Role.findOne({_id:new ObjectId(roles[i])})
+            let curr:any;
+            for(curr in curr_role?.permissions){
+                if(!user_permissions.includes(curr)){
+                    user_permissions.push(String(curr_role?.permissions[curr]))
+                }
+            }
+        }
+        const resource = await Resource.findOne({_id:new ObjectId(req.params.id)})
+        const resource_permissions = resource?.permissions as Array<string>
+        const commmon_permissions:Array<string> = []
+        for(let i=0;i<resource_permissions?.length;i++){
+            if(user_permissions.includes(String(resource_permissions[i]))){
+                commmon_permissions.push(resource_permissions[i])
+            }
+        }
+        return res.json({success:true, message:"Permissions found successfully", data:commmon_permissions})
+        
+
+    } catch (error:any) {
+        console.log(error.message)
+        return res.json({ success: false, message: "Internal Server Error Occurred" })
+    }
+}
+const getPermissions = async(req:any, res:Response)=>{
+    try {
+        const user = await User.findOne({_id:new ObjectId(req.user._id)})
+        const roles =  user?.assigned_roles as Array<string>
+        let user_permissions:Array<string> = []
+        for(let i=0;i<roles?.length;i++){
+            const curr_role = await Role.findOne({_id:new ObjectId(roles[i])})
+            let curr:any;
+            for(curr in curr_role?.permissions){
+                if(!user_permissions.includes(curr)){
+                    user_permissions.push(String(curr_role?.permissions[curr]))
+                }
+            }
+        }
+        return res.json({success:true, message: "User Permissions Fetched Successfully", data: user_permissions})
+    } catch (error:any) {
+        console.log(error.message)
+        return res.json({ success: false, message: "Internal Server Error Occurred" })
+    }
+}
 const getUser = async (req: any, res: Response) => {
     try {
         const user = await User.findOne({ _id: new ObjectId(req.user._id) }).select('-password')
@@ -85,4 +137,4 @@ const deleteUser = async (req: Request, res:Response) =>{
     }
 }
 
-export default { getAllUsers, createUser, loginUser, getUser }
+export default { getAllUsers, createUser, loginUser, getUser, getUserPermissions, getPermissions }

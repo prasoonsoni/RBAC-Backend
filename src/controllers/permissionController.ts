@@ -14,6 +14,16 @@ const getAllPermissions = async (req: Request, res: Response) => {
     }
 }
 
+const getPermissionById = async (req: Request, res: Response) => {
+    try {
+        const permission = await Permission.findOne({_id: req.params.id})
+        return res.json({ success: true, message: "Permissions Found Successfully", data: permission })
+    } catch (error: any) {
+        console.log(error.message)
+        return res.json({ success: false, message: "Internal Server Error Occurred" })
+    }
+}
+
 const createPermission = async (req: Request, res: Response) => {
     try {
         const { name, description } = req.body
@@ -27,6 +37,7 @@ const createPermission = async (req: Request, res: Response) => {
         return res.json({ success: false, message: "Internal Server Error Occurred" })
     }
 }
+
 
 const updatePermission = async (req: Request, res: Response) => {
     try {
@@ -65,4 +76,4 @@ const deletePermission = async (req: Request, res: Response) => {
     }
 }
 
-export default { getAllPermissions, createPermission, updatePermission, deletePermission }
+export default { getAllPermissions, getPermissionById, createPermission, updatePermission, deletePermission }

@@ -1,6 +1,8 @@
 import { ObjectId } from "mongodb"
 import Resource from "../models/Resource"
+import User from '../models/User'
 import { Request, Response } from "express"
+import Role from "../models/Role"
 
 const getAllResources = async (req: Request, res: Response) => {
     try {
