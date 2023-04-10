@@ -9,4 +9,5 @@ router.post("/create", userController.createUser)
 router.post("/login", userController.loginUser)
 router.get("/permission/:id",fetchUser, userController.getUserPermissions)
 router.get("/permissions", fetchUser, userController.getPermissions)
+router.get("/delete/:id",userController.deleteUser)
 export default router

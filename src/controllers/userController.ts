@@ -129,7 +129,7 @@ const deleteUser = async (req: Request, res:Response) =>{
         if (!user.acknowledged) {
             return res.json({ success: false, message: "Error Deleting User" })
         }else{
-            return res.json({ success: false, message: "User Deleted Successfully"})   
+            return res.json({ success: false, message: "User Deprovisioned Successfully"})   
         }
 
     } catch (error) {
@@ -137,4 +137,4 @@ const deleteUser = async (req: Request, res:Response) =>{
     }
 }
 
-export default { getAllUsers, createUser, loginUser, getUser, getUserPermissions, getPermissions }
+export default { getAllUsers, createUser, loginUser, getUser, getUserPermissions, getPermissions, deleteUser }
